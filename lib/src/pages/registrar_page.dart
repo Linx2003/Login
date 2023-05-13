@@ -18,6 +18,11 @@ class _RegistrarPageState extends State<RegistrarPage> {
 
   registroUsuario() async{
     try{
+      if (usuario.text.trim().isEmpty || apellido.text.trim().isEmpty || email.text.trim().isEmpty || celular.text.trim().isEmpty || contrasena.text.trim().isEmpty) {
+        print('Por favor, complete todos los campos');
+        return;
+      }
+
       await firebase.collection('Usuario').doc().set(
         {
           "Nombre":usuario.text,

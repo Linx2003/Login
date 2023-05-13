@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:red_social/src/pages/registrar_page.dart';
 
@@ -9,6 +10,32 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  TextEditingController user = TextEditingController();
+  TextEditingController email = TextEditingController();
+  TextEditingController password = TextEditingController();
+
+  validarDatos() async{
+    try{
+      CollectionReference ref= FirebaseFirestore.instance.collection('Usuario');
+      QuerySnapshot usuario= await ref.get();
+
+      if(usuario.docs.length !=0){
+        for(var cursor in usuario.docs){
+          if(cursor.get('Nombre')== user.text || cursor.get('Email') == user.text){
+            print('Usuario encontrado');
+            if(cursor.get('Contraseña')==password.text){
+              print('Acceso concedido');
+            }
+          }
+        }
+      }else{
+        print('No hay documentos en la seleccion');
+      }
+    }catch(e){
+      print('Error'+e.toString());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -50,7 +77,7 @@ class _LoginPageState extends State<LoginPage> {
       return Container(
         padding: EdgeInsets.symmetric(horizontal: 30.0),
         child: TextField(
-          keyboardType: TextInputType.emailAddress,
+          controller: user,
           decoration: InputDecoration(
             icon: Icon(Icons.email),
             hintText: 'ejemplo@correo.com',
@@ -68,6 +95,7 @@ class _LoginPageState extends State<LoginPage> {
       return Container(
         padding: EdgeInsets.symmetric(horizontal: 30.0),
         child: TextField(
+          controller: password,
           keyboardType: TextInputType.emailAddress,
           obscureText: true,
           decoration: InputDecoration(
@@ -92,7 +120,10 @@ class _LoginPageState extends State<LoginPage> {
             style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
           ),
         ),
-        onPressed: () {},
+        onPressed: () {
+          print('Ingresando ...');
+          validarDatos();
+        },
         style: ButtonStyle(
             backgroundColor: MaterialStateProperty.all(Colors.amber)),
       );

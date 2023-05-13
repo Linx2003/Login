@@ -1,6 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:red_social/src/pages/login_pages.dart';
+import 'package:red_social/src/pages/LoginPage.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
