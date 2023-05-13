@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'dart:convert';
 
 class RegistrarPage extends StatefulWidget {
   @override
@@ -14,26 +15,30 @@ class _RegistrarPageState extends State<RegistrarPage> {
   TextEditingController email = TextEditingController();
   TextEditingController celular = TextEditingController();
   TextEditingController contrasena = TextEditingController();
-  final firebase=FirebaseFirestore.instance;
+  final firebase = FirebaseFirestore.instance;
 
-  registroUsuario() async{
-    try{
-      if (usuario.text.trim().isEmpty || apellido.text.trim().isEmpty || email.text.trim().isEmpty || celular.text.trim().isEmpty || contrasena.text.trim().isEmpty) {
+  registroUsuario() async {
+    try {
+      if (usuario.text.trim().isEmpty ||
+          apellido.text.trim().isEmpty ||
+          email.text.trim().isEmpty ||
+          celular.text.trim().isEmpty ||
+          contrasena.text.trim().isEmpty) {
         print('Por favor, complete todos los campos');
         return;
       }
 
-      await firebase.collection('Usuario').doc().set(
-        {
-          "Nombre":usuario.text,
-          "Apellido":apellido.text,
-          "Email":email.text,
-          "Celular":celular.text,
-          "Contraseña":contrasena.text
-        }
-      );
-    }catch (e){
-      print('No hay sistema: '+e.toString());
+      final encodedPassword = base64.encode(utf8.encode(contrasena.text));
+
+      await firebase.collection('Usuario').add({
+        "Nombre": usuario.text,
+        "Apellido": apellido.text,
+        "Email": email.text,
+        "Celular": celular.text,
+        "Contraseña": encodedPassword
+      });
+    } catch (e) {
+      print('No hay sistema: ' + e.toString());
     }
   }
 
