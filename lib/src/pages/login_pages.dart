@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:red_social/src/pages/principal_page.dart';
 import 'package:red_social/src/pages/registrar_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -92,7 +93,12 @@ class _LoginPageState extends State<LoginPage> {
             style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
           ),
         ),
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => PrincipalPage()),
+          );
+        },
         style: ButtonStyle(
             backgroundColor: MaterialStateProperty.all(Colors.amber)),
       );
