@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "674394725719",
+    "project_id": "redsocial-c6de9",
+    "storage_bucket": "redsocial-c6de9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:674394725719:android:465474fffa4cc662dc7212",
+        "android_client_info": {
+          "package_name": "com.example.red_social"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "674394725719-7rs3l5ppal2oia76lg3s2q5u2n8ohfum.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDade3OymXgHMwlbYhRLU1mCEfXaPXZ0NU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "674394725719-7rs3l5ppal2oia76lg3s2q5u2n8ohfum.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "674394725719-93uqd17srac1i2knnbatdgod140ae064.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.flutterApplication1"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
