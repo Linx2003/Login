@@ -13,17 +13,17 @@ class Indicadores extends StatelessWidget {
         Text(
           number,
           style: GoogleFonts.josefinSans(
-            fontSize: 30,
+            fontSize: 25,
             fontWeight: FontWeight.bold,
-            color: Color(0xff4245ff),
+            color: Color.fromARGB(255, 158, 235, 187),
           ),
         ),
         Text(
           text,
           style: GoogleFonts.josefinSans(
-            fontSize: 20,
+            fontSize: 15,
             fontWeight: FontWeight.bold,
-            color: Colors.black38,
+            color: Color.fromARGB(96, 20, 78, 38),
           ),
         ),
       ],

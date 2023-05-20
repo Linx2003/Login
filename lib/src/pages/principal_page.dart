@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:red_social/src/pages/perfil/custom.card.dart';
 import 'package:red_social/src/pages/perfil/custom_bottom_bar.dart';
 
 import 'Perfil/tarjeta_perfil.dart';
@@ -15,8 +16,11 @@ class PrincipalPage extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            TarjetaPerfil(),
+            TarjetaPerfil(defaultImagePath: 'images/panda.jpeg',),
             SizedBox(height: 10),
+            CustomCard(),
+            CustomCard(),
+            CustomCard(),  
           ],
         ),
       ),
