@@ -1,17 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 import '../perfilUsuario.dart/profile.dart';
-import 'customBar.dart';
 import 'newsSection.dart';
 import 'postScreen.dart';
 
-class NewsApp extends StatelessWidget {
+class NewsApp extends StatefulWidget {
   static const String id = 'news_app';
 
-  NewsApp({Key? key}) : super(key: key);
+  @override
+  _NewsAppState createState() => _NewsAppState();
+}
 
+class _NewsAppState extends State<NewsApp> {
   int activeIndex = 0; // Índice del icono activo (0 para Inicio, 1 para Perfil)
 
   final CollectionReference postsRef = FirebaseFirestore.instance.collection('Publicaciones');
@@ -77,11 +78,15 @@ class NewsApp extends StatelessWidget {
                   padding: const EdgeInsets.only(right: 20.0, top: 10.0, bottom: 10.0),
                   child: InkWell(
                     onTap: () {
-                      perfilUsuario();
-                      if (activeIndex != 0) {
-                        activeIndex = 1; // Establece el índice del icono activo como 0 (Inicio)
-                        // Realiza cualquier acción adicional que desees al seleccionar el icono
-                      }
+                      if (activeIndex != 1) {
+                      setState(() {
+                        activeIndex = 1; // Establece el índice del icono activo como 1 (Perfil)
+                      });
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => perfilUsuario()), // Navega a la pantalla de perfil
+                      );
+                    }
                     },
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
