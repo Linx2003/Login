@@ -44,6 +44,9 @@ dependencies:
   intl: ^0.18.1
   firebase_storage: ^11.2.0
   image_picker: ^0.8.7+5
+  get: ^4.6.5
+  cached_network_image: ^3.2.3
+  url_launcher: ^6.1.11
 
 dev_dependencies:
   flutter_test:

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -8,11 +10,11 @@ class SignUpForm extends StatelessWidget {
   final BuildContext context;
   
   SignUpForm({
-    required this.context
-  });
+    required this.context, 
+    required void Function(dynamic email)? onSubmit 
+    });
 
   TextEditingController usuario = TextEditingController();
-  TextEditingController apellido = TextEditingController();
   TextEditingController email = TextEditingController();
   TextEditingController celular = TextEditingController();
   TextEditingController contrasena = TextEditingController();
@@ -22,7 +24,6 @@ class SignUpForm extends StatelessWidget {
   registroUsuario() async{
     try {
       if (usuario.text.trim().isEmpty ||
-          apellido.text.trim().isEmpty ||
           email.text.trim().isEmpty ||
           celular.text.trim().isEmpty ||
           contrasena.text.trim().isEmpty) {
@@ -30,8 +31,33 @@ class SignUpForm extends StatelessWidget {
         return;
       }
 
+      final encodedPassword = base64.encode(utf8.encode(contrasena.text));
+
       if (contrasena.text.trim().length < 6) {
         mostrarSnackBar('La contraseña debe tener al menos 6 caracteres');
+        return;
+      }
+
+      //valida usuario
+      final querySnapshot = await firebaseFirestore
+          .collection('Usuario')
+          .where('Usuario', isEqualTo: usuario.text.trim())
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        // Si el usuario ya existe, muestra un mensaje de error y devuelve la función
+        mostrarSnackBar('Este usuario ya está registrado');
+        return;
+      }
+
+      //valida email
+      final querySnapshott = await FirebaseFirestore.instance
+          .collection('Usuario')
+          .where('Email', isEqualTo: email.text)
+          .get();
+
+      if (querySnapshott.docs.isNotEmpty) {
+        mostrarSnackBar('El correo electrónico ya está registrado');
         return;
       }
 
@@ -48,15 +74,31 @@ class SignUpForm extends StatelessWidget {
       if (userId != null) {
         // Guarda los datos adicionales del usuario en Cloud Firestore
         await firebaseFirestore.collection('Usuario').doc(userId).set({
-          "Nombre": usuario.text,
-          "Apellido": apellido.text,
+          "Usuario": usuario.text,
           "Email": email.text,
           "Celular": celular.text,
-          "Contraseña": contrasena.text
+          "Contraseña": encodedPassword
         });
 
-      mostrarSnackBar('Usuario registrado');
-      Navigator.pushReplacementNamed(context, LoginPage.id); // Volver a la pantalla anterior (login)
+      await userCredential.user!.sendEmailVerification();
+
+      showDialog(
+        context: context, 
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Registro exitoso'),
+            content: Text('Se ha enviado un correo electrónico de verificacion. Por favor, verifica tu dirección de correo electronico para completar el registro.'),
+            actions: [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                }, 
+                child: Text('Aceptar'),
+              ),
+            ],
+          );
+        }
+      ); 
       }
     } catch (e) {
       print('Error al registrar el usuario: $e');
@@ -79,20 +121,9 @@ class SignUpForm extends StatelessWidget {
             TextFormField(
               controller: usuario,
               decoration: const InputDecoration(
-                label: Text('Nombre/Usuario'),
+                label: Text('Usuario'),
                 prefixIcon: Icon(
                   Icons.person_outline_rounded,
-                  color: Color(0xff4245ff),
-                ),
-              ),
-            ),
-            const SizedBox(height: 30.0 -20),
-            TextFormField(
-              controller: apellido,
-                decoration: const InputDecoration(
-                label: Text('Apellido'),
-                prefixIcon: Icon(
-                  Icons.person_outline_sharp,
                   color: Color(0xff4245ff),
                 ),
               ),
@@ -107,6 +138,7 @@ class SignUpForm extends StatelessWidget {
                   color: Color(0xff4245ff),
                 ),
               ),
+              keyboardType: TextInputType.emailAddress,
             ),
             const SizedBox(height: 30.0 -20),
             TextFormField(
@@ -118,6 +150,7 @@ class SignUpForm extends StatelessWidget {
                   color: Color(0xff4245ff),
                 ),
               ),
+              keyboardType: TextInputType.phone,
             ),
             const SizedBox(height: 30.0 -20),
             TextFormField(

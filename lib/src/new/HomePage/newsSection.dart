@@ -77,7 +77,7 @@ class _PostCardState extends State<PostCard> {
         onTap: () {
           Navigator.push(context, MaterialPageRoute(builder: (context) {
             return Scaffold(
-              backgroundColor: Colors.black,
+              backgroundColor: Color.fromARGB(131, 0, 0, 0),
               body: GestureDetector(
                 onTap: () {
                   Navigator.pop(context);
@@ -140,7 +140,7 @@ class _PostCardState extends State<PostCard> {
         }
       });
 
-      final postRef = FirebaseFirestore.instance.collection('Publicaciones').doc(widget.post.postId);
+      final postRef = FirebaseFirestore.instance.collection('Post').doc(widget.post.postId);
       postRef.update({'likedBy': widget.post.likedBy}).then((value) {
         print('Me gusta actualizado exitosamente');
       }).catchError((error) {

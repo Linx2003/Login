@@ -1,5 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:red_social/src/new/HomePage/news.dart';
 
 import '../Register/signUp.dart';
 
@@ -7,34 +12,51 @@ class LoginFooter extends StatelessWidget {
   final BuildContext context;
   LoginFooter({Key? key, required this.context}) : super (key: key);
 
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
-  Future<void> _signInWithGoogle() async {
-  try {
-    final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-    if (googleUser != null) {
-      // Autenticación exitosa, se obtiene la información del usuario
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+  Future<UserCredential?> signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser!.authentication;
 
-      // Accede a los tokens de autenticación
-      String accessToken = googleAuth.accessToken ?? '';
-      String idToken = googleAuth.idToken ?? '';  //puede ser nulo
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
 
-      // Realiza la lógica de autenticación con los tokens obtenidos
+      final UserCredential userCredential =
+          await _auth.signInWithCredential(credential);
 
-      // Ejemplo de cómo imprimir los tokens
-      print('Access Token: $accessToken');
-      print('ID Token: $idToken');
-    } else {
-      // El usuario canceló la autenticación
-      print('Autenticación cancelada por el usuario');
+      return userCredential;
+    } on PlatformException catch (e) {
+      print('Error signing in with Google: ${e.message}');
+    return null;
+    }catch (e) {
+      print('Error signing in with Google: $e');
+      return null;
     }
-  } catch (e) {
-    // Ocurrió un error durante la autenticación con Google
-    print('Error al autenticar con Google: $e');
   }
-}
 
+  Future<void> saveUserToFirestore(User user) async {
+    try {
+      final CollectionReference usersCollection =
+          FirebaseFirestore.instance.collection('users');
+
+      final userData = {
+        'id': user.uid,
+        'usuario': user.displayName,
+        'celular': '',
+        'contraseña': '',
+        'email': user.email,
+      };
+
+      await usersCollection.doc(user.uid).set(userData);
+    } catch (e) {
+      print('Error saving user to Firestore: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,8 +68,15 @@ class LoginFooter extends StatelessWidget {
           width: double.infinity,
           child: OutlinedButton.icon(
             icon: Image(image: AssetImage('images/google.png'), width: 20.0 ),
-            onPressed: () {
-              _signInWithGoogle();
+            onPressed: () async {
+              UserCredential? userCredential = await signInWithGoogle();
+              if (userCredential != null) {
+                await saveUserToFirestore(userCredential.user!);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => NewsApp()),
+                );
+              }
             },
             label: Text('Ingresar con google'),
           ),
@@ -77,4 +106,3 @@ class LoginFooter extends StatelessWidget {
     );
   }
 }
-

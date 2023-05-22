@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../HomePage/news.dart';
+import '../olvidarPass/forgetPasswordBottom.dart';
 
 class LoginForm extends StatelessWidget {
   final BuildContext context;
@@ -15,23 +18,25 @@ class LoginForm extends StatelessWidget {
     Intl.defaultLocale = 'es';
   }
 
-
   validarDatos() async{
+    final decodedPassword = base64.encode(utf8.encode(password.text));
     try{
       CollectionReference ref= FirebaseFirestore.instance.collection('Usuario');
       QuerySnapshot usuario= await ref.get();
 
       if(usuario.docs.length !=0){
         for(var cursor in usuario.docs){
-          if(cursor.get('Nombre')== user.text || cursor.get('Email') == user.text){
+          if(cursor.get('Usuario')== user.text.trim() || cursor.get('Email') == user.text.trim()){
             print('Usuario encontrado');
-            if(cursor.get('Contraseña')==password.text){
+            if(cursor.get('Contraseña')==decodedPassword){
               print('Acceso concedido');
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => NewsApp()),
               );
             }
+          }else if (cursor.get('Usuario') != user.text || cursor.get('Email') != user.text) {
+            mostrarSnackBar('El usuario o contraseña son invalidos');
           }
         }
       }else{
@@ -40,6 +45,11 @@ class LoginForm extends StatelessWidget {
     }catch(e){
     print('Error'+e.toString());
     }
+  }
+
+  void mostrarSnackBar(String mensaje) {
+    final snackBar = SnackBar(content: Text(mensaje));
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   @override
@@ -54,7 +64,7 @@ class LoginForm extends StatelessWidget {
               controller: user,
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.person_outline_outlined), //icono
-                labelText: 'Email o Nombre',
+                labelText: 'Usuario',
                 hintText: 'ejemplo@correo.com',
                 border: OutlineInputBorder()  //caja
               ),
@@ -76,7 +86,7 @@ class LoginForm extends StatelessWidget {
               alignment: Alignment.centerRight,
               child: TextButton(
                 onPressed: () {
-
+                  ForgetPasswordBottom.buildShowModalBottomSheet(context);
                 }, 
                 child: const Text('¿Olvidaste tu contraseña?')),
             ),

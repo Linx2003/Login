@@ -5,8 +5,8 @@ class TextThemes{
   TextThemes._();
 
   static TextTheme lightTextTheme = TextTheme(
-    headline1: GoogleFonts.montserrat(fontSize: 28.0, fontWeight: FontWeight.bold, color: Color(0xFF272727)),
-    headline2: GoogleFonts.montserrat(fontSize: 24.0, fontWeight: FontWeight.w700, color: Color(0xFF272727)),
+    headline1: GoogleFonts.kanit(fontSize: 28.0, fontWeight: FontWeight.bold, color: Color(0xFF272727)),
+    headline2: GoogleFonts.kanit(fontSize: 24.0, fontWeight: FontWeight.w700, color: Color(0xFF272727)),
     headline3: GoogleFonts.poppins(fontSize: 24.0, fontWeight: FontWeight.w700, color: Color(0xFF272727)),
     headline4: GoogleFonts.poppins(fontSize: 16.0, fontWeight: FontWeight.w600, color: Color(0xFF272727)),
     headline6: GoogleFonts.poppins(fontSize: 14.0, fontWeight: FontWeight.w600, color: Color(0xFF272727)),
@@ -15,8 +15,8 @@ class TextThemes{
   );
 
   static TextTheme darkTextTheme = TextTheme(
-    headline1: GoogleFonts.montserrat(fontSize: 28.0, fontWeight: FontWeight.bold, color: Colors.white),
-    headline2: GoogleFonts.montserrat(fontSize: 24.0, fontWeight: FontWeight.w700, color: Colors.white),
+    headline1: GoogleFonts.kanit(fontSize: 28.0, fontWeight: FontWeight.bold, color: Colors.white),
+    headline2: GoogleFonts.kanit(fontSize: 24.0, fontWeight: FontWeight.w700, color: Colors.white),
     headline3: GoogleFonts.poppins(fontSize: 24.0, fontWeight: FontWeight.w700, color: Colors.white),
     headline4: GoogleFonts.poppins(fontSize: 16.0, fontWeight: FontWeight.w600, color: Colors.white),
     headline6: GoogleFonts.poppins(fontSize: 14.0, fontWeight: FontWeight.w600, color: Colors.white),

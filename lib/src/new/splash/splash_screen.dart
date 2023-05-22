@@ -12,6 +12,7 @@ class SplashScreen extends StatefulWidget {
 }
 
 class splashWelcome extends State<SplashScreen> {
+
   @override
   Widget build(BuildContext context){
     var mediaQuery = MediaQuery.of(context);
@@ -23,7 +24,8 @@ class splashWelcome extends State<SplashScreen> {
 
     return Scaffold(
       backgroundColor: isDarkMode ? Color(0xFF272727) : Colors.white,
-      body: Container(
+      body: 
+      Container(
         padding: EdgeInsets.all(30.0), // bordes
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,  //alineacion uniforme y equilibrado
@@ -70,10 +72,10 @@ class splashWelcome extends State<SplashScreen> {
                   )
                 )
               ],
-            )
+            ),
           ],
         ),
-      )
+      ),
     );
   }
 }

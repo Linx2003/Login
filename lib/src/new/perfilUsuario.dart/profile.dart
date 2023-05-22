@@ -1,20 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../HomePage/postScreen.dart';
 import 'tarjeta_perfil.dart';
-
-class AppRoutes {
-  static const String tarjetaPerfil = '/tarjeta_perfil';
-
-  static List<GetPage> routes = [
-    GetPage(
-      name: tarjetaPerfil,
-      page: () => tarjetaPerfil(defaultImagePath: 'images/panda.jpeg',),
-    ),
-    // Otras rutas de tu aplicación
-  ];
-}
-
 
 class perfilUsuario extends StatefulWidget {
   static const String id = 'perfil_usuario';
@@ -28,11 +16,88 @@ class _perfilUsuarioState extends State<perfilUsuario> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Stack(
           children: [
-            tarjetaPerfil(),
+            Container(
+              width: double.infinity,
+              height: size.height * 0.6,
+              color: Colors.white,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 50),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Text(
+                      'Mi perfil',
+                      style: GoogleFonts.josefinSans(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 158, 235, 187),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        // Acción al presionar el círculo de la imagen
+                        // Puedes agregar aquí la lógica para abrir la galería del celular
+                      },
+                      child: Stack(
+                        alignment: Alignment.bottomRight,
+                        children: [
+                          Container(
+                            width: size.width * 0.4,
+                            height: size.width * 0.4,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.blue, // Cambia el color del círculo según tus necesidades
+                            ),
+                            child: Icon(
+                              Icons.person,
+                              size: size.width * 0.2,
+                              color: Colors.white,
+                            ),
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.white,
+                            ),
+                            padding: const EdgeInsets.all(4),
+                            child: Icon(
+                              Icons.edit,
+                              color: Colors.grey[600],
+                              size: 20,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Text.rich(
+                      TextSpan(
+                        text: 'Usuario\n',
+                        style: GoogleFonts.josefinSans(
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        children: [
+                          TextSpan(
+                            text: 'Correo@gmail.com',
+                            style: GoogleFonts.josefinSans(
+                              fontSize: 20,
+                              color: Colors.black38,
+                            ),
+                          ),
+                        ],
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ),
