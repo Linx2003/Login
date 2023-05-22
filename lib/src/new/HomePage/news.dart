@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-import '../perfilUsuario.dart/profile.dart';
+import '../perfil/profile.dart';
 import 'newsSection.dart';
 import 'postScreen.dart';
 

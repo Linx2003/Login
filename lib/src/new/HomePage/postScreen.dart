@@ -15,6 +15,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
   File? _selectedProfileImage;
   File? _selectedPostImage;
   bool _showDeleteIcon = false;
+  String nombreAutor = FirebaseAuth.instance.currentUser?.displayName ?? 'Nombre del autor';
 
   void _updateText(String newText) {
     setState(() {

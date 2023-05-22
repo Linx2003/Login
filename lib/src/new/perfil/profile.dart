@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:red_social/src/new/HomePage/news.dart';
 import '../HomePage/postScreen.dart';
-import 'tarjeta_perfil.dart';
+import 'perfilWidget.dart';
 
 class perfilUsuario extends StatefulWidget {
   static const String id = 'perfil_usuario';
