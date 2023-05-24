@@ -29,6 +29,7 @@ class _ChatState extends State<Chat> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Chat'),
+        backgroundColor: Color(0xFFAAC8A7),
       ),
       body: Column(
         children: [
@@ -168,6 +169,9 @@ class _ChatState extends State<Chat> {
                             _isButtonDisabled = true;
                           });
                         },
+                  style: ElevatedButton.styleFrom(
+                    primary: Color(0xFFAAC8A7),
+                  ),
                   child: Text('Enviar'),
                 ),
               ],

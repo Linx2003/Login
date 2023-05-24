@@ -44,8 +44,8 @@ class splashWelcome extends State<SplashScreen> {
                     }, 
                     style: OutlinedButton.styleFrom( 
                       shape: RoundedRectangleBorder(), 
-                      foregroundColor: Color(0xff4245ff), 
-                      side: BorderSide(color: Color(0xff4245ff)),
+                      foregroundColor: Color(0xFFAAC8A7), 
+                      side: BorderSide(color: Color(0xFFAAC8A7)),
                       padding: EdgeInsets.symmetric(vertical: 15.0)
                     ),
                   child: Text('Login'.toUpperCase())
@@ -63,8 +63,8 @@ class splashWelcome extends State<SplashScreen> {
                     style: OutlinedButton.styleFrom( 
                       shape: RoundedRectangleBorder(), 
                       foregroundColor: Colors.white, 
-                      backgroundColor: Color(0xff4245ff),
-                      side: BorderSide(color: Color(0xff4245ff)),
+                      backgroundColor: Color(0xFFAAC8A7),
+                      side: BorderSide(color: Color(0xFFAAC8A7)),
                       padding: EdgeInsets.symmetric(vertical: 15.0)
                     ), //linea del boton 
                     child: Text('Signup'.toUpperCase())

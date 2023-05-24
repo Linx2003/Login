@@ -98,50 +98,35 @@ class _RegisterState extends State<Register> {
                 context: widget.context,
                 onSubmit: (email) {},
               ),
-              Column(
-                children: [
-                  const Text("O"),
-                  SizedBox(
-                    width: double.infinity,
-                    child: OutlinedButton.icon(
-                      onPressed: () {
-                        print('Antes de _signInWithGoogle');
-                        _signInWithGoogle().then((_) {
-                          print('Después de _signInWithGoogle');
-                        }).catchError((error) {
-                          print('Error en _signInWithGoogle: $error');
-                        });
-                      },
-                      icon: const Image(
-                        image: AssetImage('images/google.png'),
-                        width: 20.0,
+              Align(
+                alignment: Alignment.center,
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => LoginPage(),
                       ),
-                      label: const Text('Registrarse con Google'),
+                    );
+                  },
+                  child: Text.rich(
+                    TextSpan(
+                      children: [
+                        TextSpan(
+                          text: '¿Ya tienes una cuenta? ',
+                          style: Theme.of(context).textTheme.bodyText1,
+                        ),
+                        TextSpan(
+                          text: 'Ingresar'.toUpperCase(),
+                          style: TextStyle(
+                            color: Color(0xFFAAC8A7),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => LoginPage(),
-                        ),
-                      );
-                    },
-                    child: Text.rich(
-                      TextSpan(
-                        children: [
-                          TextSpan(
-                            text: '¿Ya tienes una cuenta?',
-                            style: Theme.of(context).textTheme.bodyText1,
-                          ),
-                          TextSpan(text: ' Ingresar'.toUpperCase()),
-                        ],
-                      ),
-                    ),
-                  )
-                ],
-              )
+                ),
+              ),
             ],
           ),
         ),

@@ -7,6 +7,7 @@ import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../Chats/chat.dart';
+import '../Login/LoginPage.dart';
 import '../UserData.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -16,6 +17,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   String? userId;
   String? imageUrl;
   String? userName;
@@ -136,7 +138,7 @@ class _ProfilePageState extends State<ProfilePage> {
             padding: const EdgeInsets.all(4),
             child: Icon(
               Icons.edit,
-              color: Colors.grey[600],
+              color: Colors.white,
               size: 20,
             ),
           ),
@@ -186,7 +188,12 @@ class _ProfilePageState extends State<ProfilePage> {
                           icon: Icon(Icons.power_settings_new),
                           onPressed: () {
                             // Acción cuando se presiona el icono de apagado
-                            
+                            _auth.signOut().then((value) {
+                              Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(builder: (context) => LoginPage()),
+                              );
+                            }
+                            );
                           },
                         ),
                       ],
@@ -278,6 +285,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ),
           ],
+          
         ),
       ),
     );

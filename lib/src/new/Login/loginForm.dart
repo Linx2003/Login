@@ -8,16 +8,22 @@ import '../HomePage/news.dart';
 import '../UserData.dart';
 import '../olvidarPass/forgetPasswordBottom.dart';
 
-class LoginForm extends StatelessWidget {
+class LoginForm extends StatefulWidget {
   final BuildContext context;
 
+    LoginForm({required this.context }) {
+    Intl.defaultLocale = 'es';
+  }
+
+  @override
+  _LoginFormState createState() => _LoginFormState();
+}
+
+class _LoginFormState extends State<LoginForm> {
   TextEditingController user = TextEditingController();
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
-
-  LoginForm({required this.context }) {
-    Intl.defaultLocale = 'es';
-  }
+  bool showPassword = false;
 
   validarDatos() async{
     final decodedPassword = base64.encode(utf8.encode(password.text));
@@ -76,12 +82,24 @@ class LoginForm extends StatelessWidget {
             const SizedBox(height: 30.0 -20), // espacios
             TextFormField(
               controller: password,
-              decoration: const InputDecoration(
+              obscureText: !showPassword,
+              decoration: InputDecoration(
                 prefixIcon: Icon(Icons.lock_open),
                 labelText: 'Contraseña',
-                hintText: 'Contraseña',border: OutlineInputBorder(),
+                hintText: 'Contraseña',
+                border: OutlineInputBorder(),
                 suffixIcon: IconButton(
-                  onPressed: null, icon: Icon(Icons.remove_red_eye_sharp)
+                  onPressed: () {
+                    setState(() {
+                      showPassword = !showPassword;
+                    });
+                    Future.delayed(Duration(seconds: 2), () {
+                      setState(() {
+                        showPassword = !showPassword;
+                      });
+                    });
+                  },
+                  icon: Icon(showPassword ? Icons.visibility : Icons.visibility_off),
                 ),
               ),
             ),
@@ -92,7 +110,13 @@ class LoginForm extends StatelessWidget {
                 onPressed: () {
                   ForgetPasswordBottom.buildShowModalBottomSheet(context);
                 }, 
-                child: const Text('¿Olvidaste tu contraseña?')),
+                child: Text(
+                  '¿Olvidaste tu contraseña?',
+                  style: TextStyle(
+                    color: Color(0xFFAAC8A7),
+                  ),
+                ),
+              ),
             ),
             SizedBox(
               width: double.infinity,
@@ -101,7 +125,7 @@ class LoginForm extends StatelessWidget {
                 validarDatos();
               }, 
               style: ElevatedButton.styleFrom(
-                primary: Color(0xff4245ff), 
+                primary: Color(0xFFAAC8A7), 
               ),
               child: Text('Ingresar'.toUpperCase(),
               )

@@ -124,7 +124,7 @@ class SignUpForm extends StatelessWidget {
                 label: Text('Usuario'),
                 prefixIcon: Icon(
                   Icons.person_outline_rounded,
-                  color: Color(0xff4245ff),
+                  color: Color(0xFFAAC8A7),
                 ),
               ),
             ),
@@ -135,7 +135,7 @@ class SignUpForm extends StatelessWidget {
                 label: Text('Correo electronico'),
                 prefixIcon: Icon(
                   Icons.email_outlined,
-                  color: Color(0xff4245ff),
+                  color: Color(0xFFAAC8A7),
                 ),
               ),
               keyboardType: TextInputType.emailAddress,
@@ -147,7 +147,7 @@ class SignUpForm extends StatelessWidget {
                 label: Text('Celular'),
                 prefixIcon: Icon(
                   Icons.numbers,
-                  color: Color(0xff4245ff),
+                  color: Color(0xFFAAC8A7),
                 ),
               ),
               keyboardType: TextInputType.phone,
@@ -159,7 +159,7 @@ class SignUpForm extends StatelessWidget {
                 label: Text('Contraseña'),
                 prefixIcon: Icon(
                   Icons.fingerprint,
-                  color: Color(0xff4245ff),
+                  color: Color(0xFFAAC8A7),
                 ),
               ),
             ),
@@ -170,6 +170,9 @@ class SignUpForm extends StatelessWidget {
                 onPressed: () {
                   registroUsuario();
                 },
+                style: ElevatedButton.styleFrom(
+                  primary: Color(0xFFAAC8A7), // Establecer el color del botón aquí
+                ),
                 child: Text('Registrarse'.toUpperCase()),
               ),
             )

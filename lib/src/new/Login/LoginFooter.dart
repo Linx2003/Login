@@ -59,49 +59,35 @@ class LoginFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        const Text("O"),
-        SizedBox(
-          width: double.infinity,
-          child: OutlinedButton.icon(
-            icon: Image(image: AssetImage('images/google.png'), width: 20.0 ),
-            onPressed: () async {
-              UserCredential? userCredential = await signInWithGoogle();
-              if (userCredential != null) {
-                await saveUserToFirestore(userCredential.user!);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => NewsApp()),
-                );
-              }
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const Text("O"),
+          const SizedBox(height: 30.0 - 20),
+          TextButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Register(context: context)),
+              );
             },
-            label: Text('Ingresar con google'),
-          ),
-        ),
-        const SizedBox(height: 30.0 -20,),
-        TextButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Register(context: context)),
-            );
-          }, 
-          child: Text.rich(
-            TextSpan(
-              text: '¿Ya tienes una cuenta hecha?',
-              style: Theme.of(context).textTheme.bodyText1,
-              children: const[
-                TextSpan(
-                  text: ' Registrate',
-                  style: TextStyle(color: Colors.blue),
-                )
-              ]
-            )
-          ),
-        )
-      ],
+            child: Text.rich(
+              TextSpan(
+                text: '¿Ya tienes una cuenta hecha?',
+                style: Theme.of(context).textTheme.bodyText1,
+                children: const [
+                  TextSpan(
+                    text: ' Registrate',
+                    style: TextStyle(color: Color(0xFFAAC8A7)),
+                  )
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
     );
   }
 }
