@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:red_social/src/new/HomePage/news.dart';
+import '../HomePage/news.dart';
 import '../HomePage/postScreen.dart';
 import 'perfilWidget.dart';
 
@@ -14,9 +14,14 @@ class _PerfilUsuarioState extends State<perfilUsuario> {
   int activeIndex = 0; // Índice del icono activo (0 para Inicio, 1 para Perfil)
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: PerfilWidget(),
+      body: ProfilePage(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
         onPressed: () {

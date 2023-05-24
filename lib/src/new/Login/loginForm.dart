@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../HomePage/news.dart';
+import '../UserData.dart';
 import '../olvidarPass/forgetPasswordBottom.dart';
 
 class LoginForm extends StatelessWidget {
@@ -24,24 +25,27 @@ class LoginForm extends StatelessWidget {
       CollectionReference ref= FirebaseFirestore.instance.collection('Usuario');
       QuerySnapshot usuario= await ref.get();
 
-      if(usuario.docs.length !=0){
-        for(var cursor in usuario.docs){
-          if(cursor.get('Usuario')== user.text.trim() || cursor.get('Email') == user.text.trim()){
+      for (var doc in usuario.docs) {
+        var cursor = doc.data() as Map<String, dynamic>; // Asegurar el tipo de cursor como Map<String, dynamic>
+        if (cursor != null) { // Verificar si cursor no es nulo
+          if (cursor['Usuario'] == user.text.trim() || cursor['Email'] == email.text.trim()) {
             print('Usuario encontrado');
-            if(cursor.get('Contraseña')==decodedPassword){
+            if (cursor['Contraseña'] == decodedPassword) {
+              UserData.userName = cursor['Usuario'];
+              UserData.email = cursor['Email'];
               print('Acceso concedido');
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => NewsApp()),
               );
+              return;
             }
-          }else if (cursor.get('Usuario') != user.text || cursor.get('Email') != user.text) {
-            mostrarSnackBar('El usuario o contraseña son invalidos');
-          }
+          } 
         }
-      }else{
-        print('No hay documentos en la seleccion');
       }
+
+        // Si el usuario o contraseña no coinciden con el documento actual, se sigue buscando
+
     }catch(e){
     print('Error'+e.toString());
     }

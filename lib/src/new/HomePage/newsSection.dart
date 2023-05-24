@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
@@ -43,7 +42,7 @@ class _PostCardState extends State<PostCard> {
   bool isImageZoomed = false;
 
   int getLikeCount() {
-  return widget.post.likedBy.length;
+    return widget.post.likedBy.length;
   }
 
   String getPostTimeAgo() {
@@ -126,34 +125,26 @@ class _PostCardState extends State<PostCard> {
   }
 
   void toggleLiked() {
-    final user = FirebaseAuth.instance.currentUser;
-    final currentUserId = user?.uid;
+    setState(() {
+      final liked = widget.post.likedBy.contains(widget.post.postId);
 
-    if (currentUserId != null) {
-      final liked = widget.post.likedBy.contains(currentUserId);
+      if (liked) {
+        widget.post.likedBy.remove(widget.post.postId);
+      } else {
+        widget.post.likedBy.add(widget.post.postId);
+      }
 
-      setState(() {
-        if (liked) {
-          widget.post.likedBy.remove(currentUserId);
-        } else {
-          widget.post.likedBy.add(currentUserId);
-        }
-      });
-
-      final postRef = FirebaseFirestore.instance.collection('Post').doc(widget.post.postId);
+      final postRef = FirebaseFirestore.instance.collection('Publicaciones').doc(widget.post.postId);
       postRef.update({'likedBy': widget.post.likedBy}).then((value) {
         print('Me gusta actualizado exitosamente');
       }).catchError((error) {
         print('Error al actualizar el me gusta: $error');
       });
-    }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser;
-    final currentUserId = user?.uid;
-
     return Card(
       margin: EdgeInsets.all(8.0),
       child: Column(
@@ -175,19 +166,19 @@ class _PostCardState extends State<PostCard> {
           buildPostImage(),
           SizedBox(height: 8.0),
           Padding(
-            padding:            EdgeInsets.all(8.0),
+            padding: EdgeInsets.all(8.0),
             child: Text(widget.post.text),
           ),
           ButtonBar(
             children: [
               IconButton(
                 icon: Icon(
-                  widget.post.likedBy.contains(currentUserId)
-                    ? Icons.favorite
-                    : Icons.favorite_border,
-                  color: widget.post.likedBy.contains(currentUserId)
-                    ? Colors.red
-                    : Colors.grey,
+                  widget.post.likedBy.contains(widget.post.postId)
+                      ? Icons.favorite
+                      : Icons.favorite_border,
+                  color: widget.post.likedBy.contains(widget.post.postId)
+                      ? Colors.red
+                      : Colors.grey,
                 ),
                 onPressed: () {
                   print('me gusta');
@@ -217,16 +208,16 @@ class _PostCardState extends State<PostCard> {
 
 class NewsSection extends StatelessWidget {
   const NewsSection({
-    super.key,
+    Key? key,
     required this.postsRef,
-  });
+  }) : super(key: key);
 
   final CollectionReference<Object?> postsRef;
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: postsRef.snapshots(),
+      stream: postsRef.orderBy('fechaCreacion', descending: true).snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasError) {
           return Text('Error al cargar los datos');

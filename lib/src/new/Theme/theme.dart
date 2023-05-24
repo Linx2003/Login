@@ -1,7 +1,8 @@
+import 'package:Pandda/src/new/Theme/textThemes.dart';
 import 'package:flutter/material.dart';
-import 'package:red_social/src/new/Theme/elevated_button_theme.dart';
-import 'package:red_social/src/new/Theme/outlinedButtonThemes.dart';
-import 'package:red_social/src/new/Theme/textThemes.dart';
+
+import 'elevated_button_theme.dart';
+import 'outlinedButtonThemes.dart';
 
 class appTheme {
   appTheme._();

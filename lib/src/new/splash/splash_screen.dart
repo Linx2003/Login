@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:red_social/src/new/Login/LoginPage.dart';
-
+import '../Login/LoginPage.dart';
 import '../Register/signUp.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -40,7 +39,7 @@ class splashWelcome extends State<SplashScreen> {
                     onPressed: (){
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => LoginPage(context: context)),
+                        MaterialPageRoute(builder: (context) => LoginPage()),
                       );
                     }, 
                     style: OutlinedButton.styleFrom( 

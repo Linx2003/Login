@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
-
 import 'LoginFooter.dart';
 import 'LoginHead.dart';
 import 'loginForm.dart';
 
 class LoginPage extends StatelessWidget {
   static const String id = 'login_page';
-  final BuildContext context;
-  const LoginPage({Key? key, required this.context}) : super(key: key);
-  
-  get height => null;
+
+  const LoginPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,4 +30,3 @@ class LoginPage extends StatelessWidget {
     );
   }
 }
-

@@ -4,6 +4,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+
+import '../UserData.dart'; // Importa esta línea
 
 class NewPostScreen extends StatefulWidget {
   @override
@@ -15,7 +18,17 @@ class _NewPostScreenState extends State<NewPostScreen> {
   File? _selectedProfileImage;
   File? _selectedPostImage;
   bool _showDeleteIcon = false;
-  String nombreAutor = FirebaseAuth.instance.currentUser?.displayName ?? 'Nombre del autor';
+  late String nombreAutor;
+
+  @override
+  void initState() {
+    super.initState();
+    _getUserName().then((value) {
+      setState(() {
+        nombreAutor = UserData.userName ?? value;
+      });
+    });
+  }
 
   void _updateText(String newText) {
     setState(() {
@@ -29,9 +42,18 @@ class _NewPostScreenState extends State<NewPostScreen> {
     });
   }
 
+  Future<String> _getUserName() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      DocumentSnapshot userSnapshot =
+          await FirebaseFirestore.instance.collection('Usuario').doc(user.uid).get();
+      return userSnapshot['Usuario'] ?? 'Nombre del autor';
+    }
+    return 'Nombre del autor';
+  }
+
   Future<void> _selectImageFromGallery() async {
-    final pickedImage =
-        await ImagePicker().getImage(source: ImageSource.gallery);
+    final pickedImage = await ImagePicker().getImage(source: ImageSource.gallery);
 
     if (pickedImage != null) {
       setState(() {
@@ -56,9 +78,30 @@ class _NewPostScreenState extends State<NewPostScreen> {
     });
   }
 
+  Future<File?> _getUserProfileImage() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      DocumentSnapshot userSnapshot =
+          await FirebaseFirestore.instance.collection('Usuario').doc(user.uid).get();
+      String imagePath = userSnapshot['ImagenPerfil'];
+      if (imagePath != null) {
+        Reference storageReference = FirebaseStorage.instance.ref().child(imagePath);
+        final data = await storageReference.getData();
+        if (data != null) {
+          Directory tempDir = await getTemporaryDirectory();
+          String tempPath = tempDir.path;
+          String imageName = imagePath.split('/').last;
+          File tempFile = File('$tempPath/$imageName');
+          await tempFile.writeAsBytes(data);
+          return tempFile;
+        }
+      }
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
-    User? user = FirebaseAuth.instance.currentUser;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -94,37 +137,18 @@ class _NewPostScreenState extends State<NewPostScreen> {
                     CircleAvatar(
                       backgroundColor: Colors.blue,
                       radius: 24,
-                      child: _selectedProfileImage != null
-                          ? Stack(
-                              alignment: Alignment.topRight,
-                              children: [
-                                Image.file(
-                                  _selectedProfileImage!,
-                                  fit: BoxFit.cover,
-                                ),
-                                IconButton(
-                                  icon: Icon(Icons.close),
-                                  onPressed: () => _clearSelectedImage(),
-                                ),
-                              ],
-                            )
-                          : FutureBuilder(
-                              future: _getUserProfileImage(),
-                              builder: (BuildContext context,
-                                  AsyncSnapshot<File?> snapshot) {
-                                if (snapshot.connectionState ==
-                                        ConnectionState.done &&
-                                    snapshot.data != null) {
-                                  return CircleAvatar(
-                                    backgroundImage:
-                                        FileImage(snapshot.data!),
-                                  );
-                                } else {
-                                  return Icon(Icons.person,
-                                      color: Colors.white);
-                                }
-                              },
-                            ),
+                      child: FutureBuilder<File?>(
+                        future: _getUserProfileImage(),
+                        builder: (BuildContext context, AsyncSnapshot<File?> snapshot) {
+                          if (snapshot.connectionState == ConnectionState.done && snapshot.data != null) {
+                            return CircleAvatar(
+                              backgroundImage: FileImage(snapshot.data!),
+                            );
+                          } else {
+                            return Icon(Icons.person, color: Colors.white);
+                          }
+                        },
+                      ),
                     ),
                     SizedBox(width: 16),
                     Expanded(
@@ -156,27 +180,13 @@ class _NewPostScreenState extends State<NewPostScreen> {
               ),
               _selectedPostImage != null
                   ? Padding(
-                      padding: const EdgeInsets.fromLTRB(
-                          40.0, 0, 20.0, 0),
+                      padding: const EdgeInsets.fromLTRB(40.0, 0, 20.0, 0),
                       child: Image.file(
                         _selectedPostImage!,
                         fit: BoxFit.cover,
                       ),
                     )
                   : Container(),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    if (_currentText.isNotEmpty)
-                      IconButton(
-                        icon: Icon(Icons.delete),
-                        onPressed: _clearText,
-                      ),
-                  ],
-                ),
-              ),
             ],
           ),
           Positioned(
@@ -193,72 +203,41 @@ class _NewPostScreenState extends State<NewPostScreen> {
   }
 
   void _publishPost() {
-    // Obtener una referencia a la colección "Post" en Firestore
-    CollectionReference postCollection =
-        FirebaseFirestore.instance.collection('Post');
-
-    // Generar un ID automático para el nuevo post
+    CollectionReference postCollection = FirebaseFirestore.instance.collection('Publicaciones');
     String postId = postCollection.doc().id;
-
-    // Obtener la fecha actual
     DateTime fechaCreacion = DateTime.now();
-
-    // Obtener el nombre de usuario actual
     User? user = FirebaseAuth.instance.currentUser;
-    String nombreAutor = user?.displayName ?? 'Nombre del autor';
 
-    // Crear un mapa con los datos del post
     Map<String, dynamic> postData = {
       'fechaCreacion': fechaCreacion,
-      'nombreAutor': user?.displayName ?? 'Nombre del autor',
+      'nombreAutor': nombreAutor,
       'texto': _currentText,
     };
 
-    // Guardar el post en Firestore
     postCollection.doc(postId).set(postData).then((value) {
-      // Éxito al guardar el post, ahora puedes subir la imagen a Firestore Storage
-
       if (_selectedPostImage != null) {
-        // Subir la imagen a Firestore Storage
-        String imagePath = 'Post/$postId/${postId}_image.jpg'; // Ruta de almacenamiento en Firestore Storage
-        Reference storageReference =
-            FirebaseStorage.instance.ref().child(imagePath);
+        String imagePath = 'Publicaciones/$postId/${postId}_image.jpg';
+        Reference storageReference = FirebaseStorage.instance.ref().child(imagePath);
         UploadTask uploadTask = storageReference.putFile(_selectedPostImage!);
 
         uploadTask.then((TaskSnapshot snapshot) {
-          // Obtener la URL de descarga de la imagen
           storageReference.getDownloadURL().then((imageUrl) {
-            // Actualizar el campo de la imagen en el documento del post
             postCollection.doc(postId).update({'imagen': imageUrl}).then((value) {
-              // La URL de la imagen se ha guardado correctamente en el documento del post
-              // Puedes realizar cualquier otra acción que desees
               Navigator.pop(context);
             }).catchError((error) {
-              // Error al actualizar el campo de la imagen en el documento del post
-              // Maneja el error de acuerdo a tus necesidades
+              // Maneja el error de actualizar el campo de la imagen en el documento del post
             });
           }).catchError((error) {
-            // Error al obtener la URL de descarga de la imagen
-            // Maneja el error de acuerdo a tus necesidades
+            // Maneja el error de obtener la URL de descarga de la imagen
           });
         }).catchError((error) {
-          // Error al subir la imagen a Firestore Storage
-          // Maneja el error de acuerdo a tus necesidades
+          // Maneja el error de subir la imagen a Firestore Storage
         });
-      }else{
-        //No se seleccionó ninguna imagen, volver a la pantalla anterior
+      } else {
         Navigator.pop(context);
       }
     }).catchError((error) {
-      // Error al guardar el post en Firestore
-      // Maneja el error de acuerdo a tus necesidades
+      // Maneja el error de guardar el post en Firestore
     });
-  }
-
-  Future<File?> _getUserProfileImage() async {
-    // Lógica para obtener la imagen de perfil del usuario
-    // Aquí debes implementar tu propia lógica para obtener el archivo de imagen correspondiente a la foto de perfil del usuario
-    // Puedes retornar null si no hay ninguna imagen de perfil guardada
-    return null;
   }
 }

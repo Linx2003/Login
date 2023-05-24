@@ -6,12 +6,12 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 
-class PerfilWidget extends StatefulWidget {
+class PerfilExterno extends StatefulWidget {
   @override
-  _PerfilWidgetState createState() => _PerfilWidgetState();
+  _PerfilExternoState createState() => _PerfilExternoState();
 }
 
-class _PerfilWidgetState extends State<PerfilWidget> {
+class _PerfilExternoState extends State<PerfilExterno> {
   String? userName;
   File? profileImage;
   bool profileImageExists = false;
